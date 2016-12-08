@@ -5,6 +5,9 @@ SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
+CREATE DATABASE `sprzatando` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `sprzatando`;
+
 DROP TABLE IF EXISTS `ocena`;
 CREATE TABLE `ocena` (
   `id_ocena` int(11) NOT NULL AUTO_INCREMENT,
@@ -19,9 +22,10 @@ CREATE TABLE `ocena` (
 DROP TABLE IF EXISTS `rejestracja`;
 CREATE TABLE `rejestracja` (
   `id_rejestracja` int(11) NOT NULL AUTO_INCREMENT,
-  `email` int(11) NOT NULL,
-  `haslo` int(11) NOT NULL,
-  `kod_aktywacyjny` int(11) NOT NULL,
+  `email` varchar(40) NOT NULL,
+  `haslo` varchar(20) NOT NULL,
+  `nick` varchar(20) NOT NULL,
+  `kod_aktywacyjny` varchar(10) NOT NULL,
   `data_rejestracji` date NOT NULL,
   PRIMARY KEY (`id_rejestracja`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -72,4 +76,4 @@ CREATE TABLE `zwyciezca` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2016-12-07 17:26:16
+-- 2016-12-08 09:20:29

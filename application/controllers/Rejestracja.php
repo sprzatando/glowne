@@ -17,10 +17,21 @@ class Rejestracja extends CI_Controller{
 	public function rejestruj(){
 		$email = $this->input->post('email_rejestracja');
 		$haslo = $this->input->post('haslo_rejestracja');
-		$kod = rand(1000,9999);
-		if($this->baza->rejestruj($email,$haslo,$kod)){
-			//pomyslnie wklepano do bazy
-			//przeslij wiadomosc z kodem na email uzytkownika
+		$nick = $this->input->post('nick_rejestracja');
+		if($email != null && $haslo != null && $nick != null){
+			$kod = rand(1000,9999);
+			if($this->baza->rejestruj($email,$haslo,$kod,$nick)){
+				//pomyslnie wklepano do bazy
+				//przeslij wiadomosc z kodem na email uzytkownika
+			}
+		}
+	}
+	
+	public function aktywacja($par1,$par2){
+		if($this->baza->aktywuj($par1,$par2)){
+			echo 'aktywacja pomyślna';
+		}else{
+			echo 'aktywacja niepomyślna';
 		}
 	}
 }
