@@ -31,6 +31,16 @@ class Baza extends CI_Model{
 		return true;
 	}
 	
+	public function loguj($email,$haslo){
+		$zapytanie = $this->db->get_where('uzytkownik',array('email'=>$email,'haslo'=>$haslo));
+		$zwrot = $zapytanie->result();
+		if(count($zwrot)>0){
+			return $zwrot[0];
+		}else{
+			return false;
+		}
+	}
+	
 	public function aktywuj($id,$kod){
 		$zapytanie = $this->db->get_where('rejestracja',array('id_rejestracja'=>$id,'kod_aktywacyjny'=>$kod));
 		$zwrot = $zapytanie->result();
@@ -48,5 +58,20 @@ class Baza extends CI_Model{
 		}else{
 			return false;
 		}
+	}
+	
+	public function przypominajka($email){
+		$zapytanie = $this->db->get_where('uzytkownik',array('email'=>$email));
+		$zwrot = $zapytanie->result();
+		if(count($zwrot) > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public function zmienhaslo($email,$nowehaslo){
+		$this->db->where('email',$email);
+		$this->db->update('uzytkownik',array('haslo'=>$nowehaslo));
 	}
 }

@@ -1,7 +1,7 @@
 ﻿	<main>
 		<h1>Witamy na stronie sprzątando!</h1>
 		<h2>Proszę zalogować się lub przejść do strony rejestracji</h2>
-		<form method="post">
+		<form method="post" action="<?php echo site_url('glowny/zaloguj'); ?>">
 			<div class="form-group">
 				<label for="input1">E-mail: </label>
 				<input id="input1" class="form-control" type="text" name="email_logowanie"/>
@@ -12,7 +12,8 @@
 			</div>
 			<button class="btn btn-default" type="submit">Zaloguj</button>
 		</form>
-		<a href="<?php echo site_url('rejestracja'); ?>">REJESTRACJA</a>
+		<a href="<?php echo site_url('rejestracja'); ?>">REJESTRACJA</a></br/>
+		<a href="<?php echo site_url('glowny/przypomnij')?>">Przypomnij hasło</a>
 	</main>
 </body>
 </html>

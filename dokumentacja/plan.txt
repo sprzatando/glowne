@@ -1,0 +1,7 @@
+1. glowna - strona logowania
+2. strona rejestracji
+3. strona z ofertami
+4. strona zlecenia/panel zlecenia
+5. strona uzytkownika
+6. panel uzytkownika
+7. ranking

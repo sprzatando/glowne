@@ -1,0 +1,28 @@
+1.rejestracja
+-e-mail
+-haslo
+-data(automat)
+2.uzytkownik
+-mail
+-haslo
+-nick
+-data rejestracji
+3.zlecenie
+-miejsce
+-czas
+-tel
+-mail
+-pokoje i prace
+-cena
+4.wykonawca
+-zlecenie_id
+-uzytkownik_id
+5.zwyciezca
+-zlecenie_id
+-wykonawca_id
+-status
+6.ocena
+-uzytkownik_id
+-zlecenie_id
+-ocena
+-komentarz

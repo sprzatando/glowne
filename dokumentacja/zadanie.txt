@@ -1,0 +1,43 @@
+Sprz¹tando
+
+Opis: Platforma ³¹cz¹ca ludzi posiadaj¹cy srogie hacjendy z ludŸmi maj¹cymi rêce i minimum zdolnoœci manualnych, ¿eby posprz¹taæ.
+
+1.       U¿ytkownika zak³ada konto. Rejestracja wymaga potwierdzenia i aktywacji poprzez email. U¿ytkownik ma mieæ mo¿liwoœæ przypomnienia (ustawienia) has³a – poprzez link wysy³any na email, prowadz¹cy do w³aœciwego ekrany w systemie.
+
+2.       U¿ytkownik mo¿e dodaæ ofertê (Zg³aszaj¹cy), u¿ytkownik mo¿e zg³osiæ siê do wykonania oferty (Wykonawca). Zg³aszaj¹cy nie mo¿e byæ jednoczeœnie Wykonawc¹ swojej oferty.
+
+3.       Oferta ma zawieraæ informacje:
+
+a.       Miejsce i czas planowanego sprz¹tania (zawsze pojedyncze zdarzenie)
+
+b.      Telefon i email kontaktowy
+
+c.       pokoje do sprz¹tania ( kuchnia, ³azienka, salon, sypialnia) – do zaznaczenia np. checkbboksem
+
+d.      czynnoœci do wykonania – umycie samochodu, umycie okien – do zaznaczenia np. checkboksem
+
+e.      cenê
+
+f.        oferta musi zawieraæ minimum jedn¹ opcjê wybran¹ przez Zlecaj¹cego. Wszystkie pola s¹ obowi¹zkowe.
+
+4.       System ma zawieraæ listê wystawionych ofert (widoczne oferty o czasie wykonania póŸniejszym ni¿ czas przegl¹dania –tj. ukrywamy stare oferty), zalogowane osoby mog¹ zg³aszaæ siê do wykonania.
+
+a.       To miejsce w systemie ma umo¿liwiaæ filtrowania wpisów: po cenie (dwa pola „od” i „do”) oraz klikane dla ka¿dej z cech w pkt. 3.c. oraz 3.d.  – jeœli u¿ytkownik zaznaczy w filtrowaniu np. checkboksem  „[v] mycie samochodu”, wyœwietlamy oferty zawieraj¹ce m.in. t¹ pozycjê.
+
+b.      Mo¿na zaznaczaæ dowoln¹ liczbê pozycji z 3.c. i 3.d. celem filtrowania listy.
+
+5.       Zlecaj¹cy dla ka¿dej wystawionej oferty widzi listê zg³oszonych wykonawców.
+
+a.       Wybiera jednego z nich
+
+b.      Po wybraniu Wykonawcy i potwierdzeniu przez Wykonawcê podjêcia siê pracy (patrz 6.a.), pojawia siê opcja  „PotwierdŸ wykonanie zadania” – w rzeczywistym œwiecie Zlecaj¹cy uaktywni j¹ dopiero po wykonaniu czynnoœci sprz¹tania
+
+c.       Zlecaj¹cy mo¿e wystawiæ opiniê o Wykonawcy (ocena 1…6, krótki opis tekstowy)
+
+6.       Wykonawca widzi listê ofert do, których siê zg³osi³.
+
+a.       Wykonawca widzi informacj¹ o wybraniu go przez Zg³aszaj¹cego oraz ma mo¿liwoœæ potwierdzenia
+
+b.      Wykonawca widzi listê opinii o osobie.
+
+7.       W systemie istnieje widok, który wyœwietla ranking wykonawców bazuj¹c na œredniej ocen. Wyœwietla tak¿e opinie tekstowe
