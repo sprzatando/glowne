@@ -16,14 +16,14 @@ class Zlecenie extends CI_Controller{
 	
 	public function nowe(){
 		$miejsce = $this->input->post('zlecenie_miejsce');
-		if($miejsce != null){
-			var_dump($_POST);
+		if($miejsce != null){;
 			$x = $this->input->post('zlecenie_pokoje');
-			var_dump($x);
 			//sprawdz dane i wpisz do bazy
 		}else{
 			$this->load->view('naglowek',array('tytul'=>'NOWE ZLECENIE'));
-			$this->load->view('nowezlecenie');
+			$prace = $this->baza->prace();
+			//var_dump($prace);
+			$this->load->view('nowezlecenie',array('prace'=>$prace));
 			//podaj formularz
 		}
 	}

@@ -1,0 +1,32 @@
+1.kuchnia
+	a)zmywanie naczyæ
+	b)mycie pod³ogi
+	c)czyszczenie kafelek
+	d)wyszorowanie piekarnika
+	e)œcieranie sto³u
+	f)mycie okien
+2.³azienka
+	a)czyszcznie kafelek
+	b)mycie armatury
+	c)polerowanie lustra
+	d)mycie okien
+	e)mycie pod³ogi
+	f)œcieranie kurzu
+3.salon
+	a)czyszcznie dywanów
+	b)mycie okien
+	c)œcieranie kurzu
+	d)odkurzanie
+	e)œcieranie sto³u
+4.sypialnia
+	a)œcielenie ³ó¿ka
+	b)mycie okien
+	c)odkurzanie
+	d)œcieranie kurzu
+5.gara¿
+	a)zamiatanie
+	b)mycie samochodu
+6.ogród
+	a)koszenie trawy
+	b)mycie mebli ogrodowych
+	c)czyszczenie kostki brukowej

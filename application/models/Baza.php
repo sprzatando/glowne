@@ -74,4 +74,10 @@ class Baza extends CI_Model{
 		$this->db->where('email',$email);
 		$this->db->update('uzytkownik',array('haslo'=>$nowehaslo));
 	}
+	
+	public function prace(){
+		$zapytanie = $this->db->query('SELECT pokoj.nazwa as "pokoj", praca.nazwa as "praca" FROM praca_pokoj JOIN praca ON praca_id = id_praca JOIN pokoj ON pokoj_id = id_pokoj ORDER BY id_pokoj, id_praca');
+		$zwrot = $zapytanie->result();
+		return $zwrot;
+	}
 }
