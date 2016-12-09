@@ -1,7 +1,6 @@
 <style>
 .prace{
 	text-align:center;
-	border:1px solid black;
 	display:none;
 }
 </style>	
@@ -41,18 +40,19 @@
 				foreach($prace as $x){
 					if($x->pokoj != $ostatni_pokoj){
 						if($l_pokoi > 0){
-							echo '</div>';
+							echo '</div></fieldset>';
 						}
 						$l_pokoi++;
 						$l_prace = 0;
 						$ostatni_pokoj = $x->pokoj;
-						echo '<label for="inputch'.$l_pokoi.'">'.$ostatni_pokoj.'</label>
-						<input onChange="pokoj('.$l_pokoi.')" type="checkbox" id="inputch'.$l_pokoi.'" class="form-control" name="zlecenie_'.$ostatni_pokoj.'" value="tak"/>
+						echo '<fieldset>
+						<legend>'.$ostatni_pokoj.'</legend>
+						<input onChange="pokoj('.$l_pokoi.')" type="checkbox" id="inputch'.$l_pokoi.'" class="form-control" name="zlecenie_'.$x->id_pokoj.'" value="tak"/>
 						<div class="form-group prace" id="prace'.$l_pokoi.'">';
 					}
 					echo '<div class="form-group">
 						<label for="inputch'.$l_pokoi.$l_prace.'">'.$x->praca.'</label>
-						<input type="checkbox" id="inputch'.$l_pokoi.$l_prace.'" class="form-control" name="zlecenie_'.$x->pokoj.'_'.$x->praca.'" value="tak"/>
+						<input type="checkbox" id="inputch'.$l_pokoi.$l_prace.'" class="form-control" name="zlecenie_'.$x->id_pokoj.'_'.$x->id_praca.'" value="tak"/>
 					</div>';
 					$l_prace++;
 				}
@@ -74,9 +74,9 @@
 <script>
 function pokoj(l){
 	var div = document.getElementById("prace"+l);
-	console.log(div);
-	console.log(div.style.display);
-	if(div.style.display == "none"){
+	var checkbox = document.getElementById("inputch"+l);
+	console.log(checkbox);
+	if(checkbox.checked){
 		div.style.display = "block";
 	}else{
 		div.style.display = "none";

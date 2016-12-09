@@ -15,8 +15,39 @@ class Glowny extends CI_Controller{
 			$this->load->view("naglowek",array('tytul'=>'STRONA LOGOWANIA'));
 			$this->load->view("logowanie");
 		}else{
+			$porzadek = $this->input->post("lista_porzadek");
+			$sparsowany = "";
+			$pokoje = $this->baza->pokoje();
+			foreach($pokoje as $x){
+				$nazwa = 'lista_'.$x->id_pokoj;
+				$a = $this->input->post($nazwa);
+				if($a != null){
+					$prace = $this->baza->praceDla($x->id_pokoj);
+					foreach($prace as $y){
+						$nazwa2 = 'lista_'.$y->pokoj_id.'_'.$y->praca_id;
+						$b = $this->input->post($nazwa2);
+						if($b != null){
+							if($sparsowany != ""){
+								$sparsowany .= '|';
+							}
+							$sparsowany .= $y->pokoj_id.'_'.$y->praca_id;
+						}
+					}
+				}
+			}
+			
 			$this->load->view("naglowek",array('tytul'=>'STRONA GLÓWNA'));
-			//strona z ofertami
+			$aktualna_data = date('Y-m-d');
+			$aktualna_godzina = date('H:i');
+			if($porzadek == null && $sparsowany == ""){
+				$zlecenia = $this->db->zlecenia_aktualne($aktualna_data,$aktualna_godzina);
+			}else if($porzadek != null && $sparsowany == ""){
+				$zlecenia = $this->db->zlecenia_aktualne($aktualna_data,$aktualna_godzina,-1,$porzadek);
+			}else if($porzadek == null && $sparsowany != ""){
+				$zlecenia = $this->db->zlecenia_aktualne($aktualna_data,$aktualna_godzina,-1,0,$sparsowany);
+			}else if($porzadek != null && $sparsowany != ""){
+				$zlecenia = $this->db->zlecenia_aktualne($aktualna_data,$aktualna_godzina,-1,$porzadek,$sparsowany);
+			}
 		}
 	}
 	
