@@ -86,6 +86,10 @@ class Baza extends CI_Model{
 		}
 	}
 	
+	public function dodaj_zlecenie($dane){
+		$this->db->insert('zlecenie',$dane);
+	}
+	
 	public function zlecenia_aktualne($data,$czas,$id=-1,$porzadek=0,$filtr = -1){
 		$aktualne = '(data > "'.$data.'" OR (data = "'.$data.'" AND godzina > "'.$czas.'"))';
 		$this->db->where($aktualne);
@@ -107,6 +111,12 @@ class Baza extends CI_Model{
 		$zapytanie = $this->db->get('zlecenie');
 		return $zapytanie->result();
 	}
+	
+	public function podaj_email($user_id){
+		return $this->db->get_where('uzytkownik',array('id_uzytkownik'=>$user_id))->result()[0]->email;
+	}
+	
+	//zgloszenia
 	
 	public function czy_juz_zgloszono($id_zlecenie,$id_zglaszajacy){
 		$zapytanie = $this->db->get_where('zgloszenie',array('zlecenie_id'=>$id_zlecenie,'zglaszajacy_id'=>$id_zglaszajacy));
@@ -140,6 +150,48 @@ class Baza extends CI_Model{
 		return $zwrot;
 	}
 	
+	public function wybierz_zwyciezce($zlecenie_id,$zgloszenie_id){
+		$dane = array(
+			'zlecenie_id'=>$zlecenie_id,
+			'zgloszenie_id'=>$zgloszenie_id,
+			'status'=>0
+		);
+		$this->db->insert('zwyciezca',$dane);
+	}
+	
+	public function dane_zwyciezcy($zlecenie_id){
+		$zapytanie = $this->db->get_where('zwyciezca',array('zlecenie_id'=>$zlecenie_id));
+		return $zapytanie->result();
+	}
+	
+	public function potwierdz_podjecie($zlecenie_id){
+		$this->db->set('status',1);
+		$this->db->where('zlecenie_id',$zlecenie_id);
+		$this->db->update('zwyciezca');
+	}
+	
+	public function potwierdz_wykonanie($zlecenie_id){
+		$this->db->set('status',2);
+		$this->db->where('zlecenie_id',$zlecenie_id);
+		$this->db->update('zwyciezca');
+	}
+	
+	//ocena
+	
+	public function ocen($zlecenie_id,$uzytkownik_id,$ocena,$komentarz){
+		$dane = array(
+			'zlecenie_id'=>$zlecenie_id,
+			'uzytkownik_id'=>$uzytkownik_id,
+			'ocena'=>$ocena,
+			'komentarz'=>$komentarz
+		);
+		$this->db->insert('ocena',$dane);
+	}
+	
+	public function pokaz_oceny_usera($user_id){
+		return $this->get_where('ocena',array('uzytkownik_id'=>$user_id))->result();
+	}
+	
 	//dodawanie zleceń
 	public function prace(){
 		$zapytanie = $this->db->query('SELECT id_pokoj, id_praca, pokoj.nazwa as "pokoj", praca.nazwa as "praca" FROM praca_pokoj JOIN praca ON praca_id = id_praca JOIN pokoj ON pokoj_id = id_pokoj ORDER BY id_pokoj, id_praca');
@@ -155,9 +207,5 @@ class Baza extends CI_Model{
 	public function praceDla($pokojId){
 		$zapytanie = $this->db->get_where('praca_pokoj',array('pokoj_id'=>$pokojId));
 		return $zapytanie->result();
-	}
-	
-	public function dodaj_zlecenie($dane){
-		$this->db->insert('zlecenie',$dane);
 	}
 }

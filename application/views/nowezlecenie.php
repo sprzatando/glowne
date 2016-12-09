@@ -58,20 +58,15 @@
 				}
 				//var_dump($prace);
 			?>
-			<!--
-			<label for="inputch "> </label>
-			<input type="checkbox" id="inputch " class="form-control" name="zlecenie_ " value="tak"/>
-			<div class="form-group prace" id="prace ">
-				<div class="form-group">
-					<label for="inputch "></label>
-					<input type="checkbox" id="input " class="form-control" name="zlecenie_ _ " value="tak"/>
-				</div>
-			</div>
-			-->
 		</div>
 		<button type="submit" class="btn btn-default">Prześlj</button>
 	</form>
 <script>
+var email_domyslny = <?php echo $email; ?>;
+
+function skopiujEmail(){
+	document.getElementById("input4").value = email_domyslny;
+}
 function pokoj(l){
 	var div = document.getElementById("prace"+l);
 	var checkbox = document.getElementById("inputch"+l);

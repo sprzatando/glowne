@@ -21,15 +21,47 @@ class Zlecenie extends CI_Controller{
 					$user = $this->session->zalogowany;
 					if($zwrot[0]->zlecajacy_id != $user){
 						if(!$this->db->czy_juz_zgloszono($id,$user)){
-							//można się zgłosić
+							$zgloszenie = $this->input->post('zlecenie_zgloszenie');
+							if($zgloszenie != null){
+								$this->baza->dodaj_zgloszenie($id,$user);
+							}
 						}else{
 							//już zgłoszono się do tego zlecenia
+							
+							//potwierdzenie pracy
+							$dane_zwyciezcy = $this->baza->dane_zwyciezcy($id)
+							if(count($dane_zwyciezcy)>0){
+								$status = $dane_zwyciezcy[0]->status;
+								if($status == 0){
+									$podjecie = $this->input->post('zlecenie_podjecie');
+									if($podjecie != null){
+										potwierdz_podjecie($id);
+									}
+								}
+							}
 						}
 					}else{
 						//zalogowany jest zlecajacym
-						$zgloszenia = $this->db->lista_zgloszen($id);
-						var($zgloszenia);
-						//wyświetl listę zgłoszeń
+						$dane_zwyciezcy = $this->baza->dane_zwyciezcy($id);
+						if(count($dane_zwyciezcy)>0){
+							//sprawdz status zgłoszenia
+							$status = $dane_zwyciezcy[0]->status;
+							if($status == 1){
+								$wykonane = $this->input->post('zlecenie_wykonane');
+								$if($wykonane != null){
+									//potwierdź wykonanie
+									$this->baza->potwierdz_wykonanie($id);
+								}else{
+									
+								}
+							}else if($status == 2){
+								//daj możliwosć oceny
+							}
+						}else{
+							//wyświetl listę zgłoszeń
+							$zgloszenia = $this->db->lista_zgloszen($id);
+							var($zgloszenia);
+						}
 					}
 				}else{
 					//zlecenie jest przestarzale
@@ -85,7 +117,8 @@ class Zlecenie extends CI_Controller{
 				$this->load->view('naglowek',array('tytul'=>'NOWE ZLECENIE'));
 				$prace = $this->baza->prace();
 				//var_dump($prace);
-				$this->load->view('nowezlecenie',array('prace'=>$prace));
+				$email = $this->baza->podaj_email(this->session->zalogowany);
+				$this->load->view('nowezlecenie',array('prace'=>$prace,'email'=>$email));
 				//podaj formularz
 			}
 		//}else{
