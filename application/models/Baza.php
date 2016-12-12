@@ -6,20 +6,45 @@ class Baza extends CI_Model{
 	}
 	
 	//konto uzytkownika
-	public function rejestruj($email,$haslo,$kod,$nick){
-		//dodac weryfikacje nicku
+	public function walidacja_rejestracji($email,$nick){
+		$odpowiedz = "";
 		$zapytanie = $this->db->get_where('rejestracja',array('email'=>$email));
 		$zwrot = $zapytanie->result();
 		if(count($zwrot) != 0){
-			return false;
-		}else{
-			$zapytanie = $this->db->get_where('uzytkownik',array('email'=>$email));
-			$zwrot = $zapytanie->result();
-			if(count($zwrot) != 0){
-				return false;
-			}
+			$odpowiedz .= 'Już rejestrowano się na podany email';
 		}
-		
+		$zapytanie = $this->db->get_where('uzytkownik',array('email'=>$email));
+		$zwrot = $zapytanie->result();
+		if(count($zwrot) != 0){
+			if($odpowiedz != ""){
+				$odpowiedz .= '|';
+			}
+			$odpowiedz .= 'Już istnieje użytkownik o podanym emailu';
+		}
+		$zapytanie = $this->db->get_where('rejestracja',array('nick'=>$nick));
+		$zwrot = $zapytanie->result();
+		if(count($zwrot) != 0){
+			if($odpowiedz != ""){
+				$odpowiedz .= '|';
+			}
+			$odpowiedz .= 'Ktoś już zarejestrował się na podany nick';
+		}
+		$zapytanie = $this->db->get_where('uzytkownik',array('nick'=>$nick));
+		$zwrot = $zapytanie->result();
+		if(count($zwrot) != 0){
+			if($odpowiedz != ""){
+				$odpowiedz .= '|';
+			}
+			$odpowiedz .= 'Już istnieje użytkownik o podanym nicku';
+		}
+		if($odpowiedz != ""){
+			return $odpowiedz;
+		}else{
+			return true;
+		}
+	}
+	
+	public function rejestruj($email,$haslo,$kod,$nick){
 		$dane = array(
 			'email'=>$email,
 			'haslo'=>$haslo,
@@ -28,7 +53,7 @@ class Baza extends CI_Model{
 			'data_rejestracji'=>date('Y-m-d')
 		);
 		$this->db->insert('rejestracja',$dane);
-		return true;
+		return $this->db->insert_id();
 	}
 	
 	public function loguj($email,$haslo){
@@ -70,7 +95,7 @@ class Baza extends CI_Model{
 		}
 	}
 	
-	public function zmienhaslo($email,$nowehaslo){
+	public function zmien_haslo($email,$nowehaslo){
 		$this->db->where('email',$email);
 		$this->db->update('uzytkownik',array('haslo'=>$nowehaslo));
 	}
@@ -113,7 +138,8 @@ class Baza extends CI_Model{
 	}
 	
 	public function podaj_email($user_id){
-		return $this->db->get_where('uzytkownik',array('id_uzytkownik'=>$user_id))->result()[0]->email;
+		$x = $this->db->get_where('uzytkownik',array('id_uzytkownik'=>$user_id))->result();
+		return $x[0]->email;
 	}
 	
 	//zgloszenia
@@ -183,13 +209,19 @@ class Baza extends CI_Model{
 			'zlecenie_id'=>$zlecenie_id,
 			'uzytkownik_id'=>$uzytkownik_id,
 			'ocena'=>$ocena,
-			'komentarz'=>$komentarz
+			'komentarz'=>$komentarz,
+			'data'=>date("Y-m-d")
 		);
 		$this->db->insert('ocena',$dane);
 	}
 	
 	public function pokaz_oceny_usera($user_id){
-		return $this->get_where('ocena',array('uzytkownik_id'=>$user_id))->result();
+		$this->db->order_by('data','DESC');
+		return $this->db->get_where('ocena',array('uzytkownik_id'=>$user_id))->result();
+	}
+	
+	public function top_10(){
+		return $this->db->query('SELECT uzytkownik_id, nick, avg(ocena) as "srednia" FROM ocena LEFT JOIN uzytkownik ON id_uzytkownik = uzytkownik_id GROUP BY uzytkownik_id ORDER BY srednia DESC LIMIT 10')->result();
 	}
 	
 	//dodawanie zleceń

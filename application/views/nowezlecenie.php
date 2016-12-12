@@ -21,7 +21,7 @@
 			<label for="input4">Email kontaktowy: </label>
 			<input type="email" id="input4" class="form-control" name="zlecenie_email"/>
 		</div>
-		<button onclick="skopiujEmail()" class="btn btn-default">SKOPIUJ DOMYŚLNY</button>
+		<button type="button" onclick="skopiujEmail()" class="btn btn-default">SKOPIUJ DOMYŚLNY</button>
 		<div class="form-group">
 			<label for="input5">Telefon kontaktowy: </label>
 			<input type="text" id="input5" class="form-control" name="zlecenie_telefon"/>
@@ -62,7 +62,7 @@
 		<button type="submit" class="btn btn-default">Prześlj</button>
 	</form>
 <script>
-var email_domyslny = <?php echo $email; ?>;
+var email_domyslny = '<?php echo $email; ?>';
 
 function skopiujEmail(){
 	document.getElementById("input4").value = email_domyslny;

@@ -5,8 +5,18 @@ SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
-CREATE DATABASE IF NOT EXISTS `sprzatando` /*!40100 DEFAULT CHARACTER SET utf8 */;
+DROP DATABASE IF EXISTS `sprzatando`;
+CREATE DATABASE `sprzatando` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `sprzatando`;
+
+DROP TABLE IF EXISTS `ci_sessions`;
+CREATE TABLE IF NOT EXISTS `ci_sessions` (
+        `id` varchar(40) NOT NULL,
+        `ip_address` varchar(45) NOT NULL,
+        `timestamp` int(10) unsigned DEFAULT 0 NOT NULL,
+        `data` blob NOT NULL,
+        KEY `ci_sessions_timestamp` (`timestamp`)
+);
 
 DROP TABLE IF EXISTS `ocena`;
 CREATE TABLE `ocena` (
@@ -15,6 +25,7 @@ CREATE TABLE `ocena` (
   `uzytkownik_id` int(11) NOT NULL,
   `ocena` int(11) NOT NULL,
   `komentarz` text NOT NULL,
+  `data` date NOT NULL,
   PRIMARY KEY (`id_ocena`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -122,7 +133,7 @@ CREATE TABLE `zgloszenie` (
   `id_zgloszenie` int(11) NOT NULL AUTO_INCREMENT,
   `zlecenie_id` int(11) NOT NULL,
   `zglaszajacy_id` int(11) NOT NULL,
-  `czas` datetime NOT NULL,
+  `czas` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_zgloszenie`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -152,4 +163,4 @@ CREATE TABLE `zwyciezca` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2016-12-09 10:51:54
+-- 2016-12-10 13:37:30

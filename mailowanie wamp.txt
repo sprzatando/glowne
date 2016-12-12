@@ -1,0 +1,14 @@
+C:\wamp\sendmail\sendmail.ini
+smtp_server=smtp.gmail.com
+smtp_port=465
+smtp_ssl=ssl
+default_domain=localhost
+auth_username=[your_gmail_account_username]@gmail.com
+auth_password=[your_gmail_account_password]
+hostname=localhost
+
+C:\wamp\bin\apache\apache[ver]\bin\php.ini
+sendmail_path = "C:\wamp\sendmail\sendmail.exe -t -i"
+
+w koncie google ustawic zezwolenie dla mniej bezpiecznych aplikacji
+https://www.google.com/settings/security/lesssecureapps

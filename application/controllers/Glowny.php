@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Glowny extends CI_Controller{
@@ -10,45 +10,50 @@ class Glowny extends CI_Controller{
 		$this->load->library('session');
 		$this->load->model('baza');
 	}
+	
 	public function index(){
-		if(!$this->session->has_userdata('zalogowany')){
-			$this->load->view("naglowek",array('tytul'=>'STRONA LOGOWANIA'));
-			$this->load->view("logowanie");
+		if($this->session->has_userdata('zalogowany')){
+			$zalogowany = true;
 		}else{
-			$porzadek = $this->input->post("lista_porzadek");
-			$sparsowany = "";
-			$pokoje = $this->baza->pokoje();
-			foreach($pokoje as $x){
-				$nazwa = 'lista_'.$x->id_pokoj;
-				$a = $this->input->post($nazwa);
-				if($a != null){
-					$prace = $this->baza->praceDla($x->id_pokoj);
-					foreach($prace as $y){
-						$nazwa2 = 'lista_'.$y->pokoj_id.'_'.$y->praca_id;
-						$b = $this->input->post($nazwa2);
-						if($b != null){
-							if($sparsowany != ""){
-								$sparsowany .= '|';
-							}
-							$sparsowany .= $y->pokoj_id.'_'.$y->praca_id;
-						}
+			$zalogowany = false;
+		}
+		$porzadek = $this->input->post("lista_porzadek");
+		$sparsowany = "";
+		$pokoje = $this->baza->pokoje();
+		foreach($pokoje as $x){
+			$nazwa = 'lista_'.$x->id_pokoj;
+			$a = $this->input->post($nazwa);
+			if($a != null){
+				$ile_prac=0;
+				$prace = $this->baza->praceDla($x->id_pokoj);
+				foreach($prace as $y){
+					$nazwa2 = 'lista_'.$y->pokoj_id.'_'.$y->praca_id;
+					$b = $this->input->post($nazwa2);
+					if($b != null){
+						$ile_prac++;
+						$sparsowany .= '%'.$y->pokoj_id.'_'.$y->praca_id;
 					}
 				}
-			}
-			
-			$this->load->view("naglowek",array('tytul'=>'STRONA GLÓWNA'));
-			$aktualna_data = date('Y-m-d');
-			$aktualna_godzina = date('H:i');
-			if($porzadek == null && $sparsowany == ""){
-				$zlecenia = $this->db->zlecenia_aktualne($aktualna_data,$aktualna_godzina);
-			}else if($porzadek != null && $sparsowany == ""){
-				$zlecenia = $this->db->zlecenia_aktualne($aktualna_data,$aktualna_godzina,-1,$porzadek);
-			}else if($porzadek == null && $sparsowany != ""){
-				$zlecenia = $this->db->zlecenia_aktualne($aktualna_data,$aktualna_godzina,-1,0,$sparsowany);
-			}else if($porzadek != null && $sparsowany != ""){
-				$zlecenia = $this->db->zlecenia_aktualne($aktualna_data,$aktualna_godzina,-1,$porzadek,$sparsowany);
+				if($ile_prac == 0){
+					$sparsowany .= '%'.$x->id_pokoj.'_';
+				}
 			}
 		}
+		$sparsowany .= '%';
+		$aktualna_data = date('Y-m-d');
+		$aktualna_godzina = date('H:i');
+		if($porzadek == null && $sparsowany == ""){
+			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina);
+		}else if($porzadek != null && $sparsowany == ""){
+			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina,-1,$porzadek);
+		}else if($porzadek == null && $sparsowany != ""){
+			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina,-1,0,$sparsowany);
+		}else if($porzadek != null && $sparsowany != ""){
+			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina,-1,$porzadek,$sparsowany);
+		}
+		$prace = $this->baza->prace();
+		$this->load->view("naglowek",array('tytul'=>'SPRZĄTANDO - ZLECENIA'));
+		$this->load->view('glowna',array('zalogowany'=>$zalogowany,'zlecenia'=>$zlecenia,'prace'=>$prace));
 	}
 	
 	public function zaloguj(){
@@ -60,19 +65,23 @@ class Glowny extends CI_Controller{
 				var_dump($zwrot);
 				if($zwrot != false){
 					$this->session->set_userdata('zalogowany',$zwrot->id_uzytkownik);
-					//echo 'zalogowano jako '.$zwrot->nick;
+					redirect('glowny');
 				}
+			}else{
+				//formularz logowania			
+				$this->load->view("naglowek",array('tytul'=>'SPRZATANDO - LOGOWANIE'));
+				$this->load->view("logowanie");
 			}
 		}else{
-			//echo 'nie mozesz sie zalogowac po raz drugi';
+			redirect('glowny');
 		}
 	}
 	
 	public function wyloguj(){
 		if($this->session->has_userdata('zalogowany')){
 			$this->session->unset_userdata('zalogowany');
-			//echo 'wylogowano pomyślnie';
 		}
+		redirect('glowny');
 	}
 	
 	public function przypomnij(){
@@ -83,22 +92,38 @@ class Glowny extends CI_Controller{
 				$kod = rand(1000,9999);
 				$this->session->set_tempdata('email',$email,600);
 				$this->session->set_tempdata('przypominajka',$kod,600);
-				//wyslij link do zmiany hasla na podany email
+				$link = site_url('glowny/linkhaslo').'/'.$kod;
+				$temat='SPRZATANDO - RESET HASLA';
+				$wiadomosc='Witaj!<br/>Aby zresetować hasło użyj <a href="'.$link.'">tego linku</a>';
+				$naglowki='From: admion@sprzatando.com' . "\r\n" .
+				'MIME-Version: 1.0' . "\r\n" .
+				'Content-type: text/html; charset=utf-8';
+				if(mail($email,$temat,$wiadomosc,$naglowki)){
+					$this->load->view("naglowek",array('tytul'=>'PRZYPOMNIJ HASLO'));
+					$this->load->view('przypominajka',array('email'=>$email));
+				}else{
+					$this->load->view('blad',array('komunikat'=>'Wystąpił problem z wysłaniem linku do resetu hasła!'));
+				}
 			}else{
-				//echo 'nie ma takiego maila w bazie';//brak podanego maila w bazie
+				$this->load->view('blad',array('komunikat'=>'Nie ma takiego e-maila w bazie'));
 			}
+		}else{
+			$this->load->view("naglowek",array('tytul'=>'PRZYPOMNIJ HASLO'));
+			$this->load->view("przypominajka");
 		}
-		$this->load->view("naglowek",array('tytul'=>'PRZYPOMNIJ HASŁO'));
-		$this->load->view("przypominajka");
 	}
 	
 	public function linkhaslo($kod){
 		if($this->session->has_userdata('email') && $this->session->has_userdata('przypominajka')){
 			if($this->session->przypominajka == $kod){
 				$this->session->set_tempdata('kodzlinku',$kod,600);
-				//echo 'daj formularz do zmiany hasla';
-				//dodac widok z formularzem zmiany hasła
+				$this->load->view('naglowek',array('tytul'=>'ZMIANA HASŁA'));
+				$this->load->view('zmianahasla');
+			}else{
+				$this->load->view('blad',array('komunikat'=>'Najprawdopodobniej link do zmiany hasła wygasnął<br/>Spróbuj ponownie'));
 			}
+		}else{
+			$this->load->view('blad',array('komunikat'=>'Najprawdopodobniej link do zmiany hasła wygasnął<br/>Spróbuj ponownie'));
 		}
 	}
 	
@@ -106,8 +131,23 @@ class Glowny extends CI_Controller{
 		if($this->session->has_userdata('email') && $this->session->has_userdata('przypominajka') && $this->session->has_userdata('kodzlinku')){
 			if($this->session->przypominajka == $this->session->kodzlinku){
 				$nowehaslo = $this->input->post('nowehaslo');
-				$this->baza->zmien_haslo($this->session->email,$nowehaslo);
+				$repnowehaslo = $this->input->post('repnowehaslo');
+				if($nowehaslo == $repnowehaslo){
+					$this->baza->zmien_haslo($this->session->email,$nowehaslo);
+					$this->session->unset_userdata('email');
+					$this->session->unset_userdata('przypominajka');
+					$this->session->unset_userdata('kodzlinku');
+					$this->load->view('naglowek',array('tytul'=>'ZMIANA HASŁA'));
+					$this->load->view('zmianahasla',array('zmieniono'=>true));
+				}else{
+					$this->load->view('naglowek',array('tytul'=>'ZMIANA HASŁA'));
+					$this->load->view('zmianahasla',array('zmieniono'=>false));
+				}
+			}else{
+				$this->load->view('blad',array('komunikat'=>'Najprawdopodobniej link do zmiany hasła wygasnął<br/>Spróbuj ponownie'));
 			}
+		}else{
+			$this->load->view('blad',array('komunikat'=>'Najprawdopodobniej link do zmiany hasła wygasnął<br/>Spróbuj ponownie'));
 		}
 	}
 }
