@@ -42,18 +42,18 @@ class Glowny extends CI_Controller{
 		$sparsowany .= '%';
 		$aktualna_data = date('Y-m-d');
 		$aktualna_godzina = date('H:i');
-		if($porzadek == null && $sparsowany == ""){
+		if($porzadek == null && $sparsowany == "%"){
 			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina);
-		}else if($porzadek != null && $sparsowany == ""){
-			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina,-1,$porzadek);
-		}else if($porzadek == null && $sparsowany != ""){
-			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina,-1,0,$sparsowany);
-		}else if($porzadek != null && $sparsowany != ""){
-			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina,-1,$porzadek,$sparsowany);
+		}else if($porzadek != null && $sparsowany == "%"){
+			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina,$porzadek);
+		}else if($porzadek == null && $sparsowany != "%"){
+			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina,0,$sparsowany);
+		}else if($porzadek != null && $sparsowany != "%"){
+			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina,$porzadek,$sparsowany);
 		}
 		$prace = $this->baza->prace();
 		$this->load->view("naglowek",array('tytul'=>'SPRZĄTANDO - ZLECENIA'));
-		$this->load->view('glowna',array('zalogowany'=>$zalogowany,'zlecenia'=>$zlecenia,'prace'=>$prace));
+		$this->load->view('glowna',array('zalogowany'=>$zalogowany,'porzadek'=>$porzadek,'sparsowany'=>$sparsowany,'zlecenia'=>$zlecenia,'prace'=>$prace));
 	}
 	
 	public function zaloguj(){

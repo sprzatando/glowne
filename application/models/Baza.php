@@ -115,12 +115,21 @@ class Baza extends CI_Model{
 		$this->db->insert('zlecenie',$dane);
 	}
 	
-	public function zlecenia_aktualne($data,$czas,$id=-1,$porzadek=0,$filtr = -1){
+	public function czy_zlecenie_aktualne($id_zlecenie,$data,$czas){
 		$aktualne = '(data > "'.$data.'" OR (data = "'.$data.'" AND godzina > "'.$czas.'"))';
 		$this->db->where($aktualne);
-		if($id != -1){
-			$this->db->where('id_zlecenie',$id);	
+		$this->db->where('id_zlecenie',$id_zlecenie);
+		$zwrot = $this->db->get('zlecenie')->result();
+		if(count($zwrot)>0){
+			return true;
+		}else{
+			return false;
 		}
+	}
+	
+	public function zlecenia_aktualne($data,$czas,$porzadek=0,$filtr = -1){
+		$aktualne = '(data > "'.$data.'" OR (data = "'.$data.'" AND godzina > "'.$czas.'"))';
+		$this->db->where($aktualne);
 		if($filtr != -1){
 			$this->db->like('pokoje_i_prace',$filtr);
 		}
@@ -134,7 +143,14 @@ class Baza extends CI_Model{
 		}
 		
 		$zapytanie = $this->db->get('zlecenie');
-		return $zapytanie->result();
+		$zwrot =  $zapytanie->result();
+		foreach($zwrot as $x){
+			$this->db->select('nick');
+			$zap2 = $this->db->get_where('uzytkownik',array('id_uzytkownik'=>$x->zlecajacy_id));
+			$zwrot2 = $zap2->result();
+			$x->nick = $zwrot2[0]->nick;
+		}
+		return $zwrot;
 	}
 	
 	public function podaj_email($user_id){
@@ -185,9 +201,17 @@ class Baza extends CI_Model{
 		$this->db->insert('zwyciezca',$dane);
 	}
 	
+	public function czy_wygrales_zlecenie($zlecenie_id,$user_id){
+		$x = $this->db->query('SELECT * FROM zwyciezca JOIN zgloszenie ON zgloszenie_id = id_zgloszenie WHERE zwyciezca.zlecenie_id = '.$zlecenie_id.' AND zglaszajacy_id = '.$user_id';')->result();
+		if(count($x)>0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	public function dane_zwyciezcy($zlecenie_id){
-		$zapytanie = $this->db->get_where('zwyciezca',array('zlecenie_id'=>$zlecenie_id));
-		return $zapytanie->result();
+		return $this->db->query('SELECT * FROM zwyciezca JOIN zgloszenie ON zgloszenie_id = id_zgloszenie WHERE zwyciezca.zlecenie_id = '.$zlecenie_id.';')->result();
 	}
 	
 	public function potwierdz_podjecie($zlecenie_id){
@@ -213,6 +237,10 @@ class Baza extends CI_Model{
 			'data'=>date("Y-m-d")
 		);
 		$this->db->insert('ocena',$dane);
+		
+		$this->db->set('status',3);
+		$this->db->where('zlecenie_id',$zlecenie_id);
+		$this->db->update('zwyciezca');
 	}
 	
 	public function pokaz_oceny_usera($user_id){

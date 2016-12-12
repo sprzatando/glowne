@@ -56,6 +56,7 @@
 					</div>';
 					$l_prace++;
 				}
+				echo '</div></fieldset>';
 				//var_dump($prace);
 			?>
 		</div>
