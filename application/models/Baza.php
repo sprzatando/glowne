@@ -100,6 +100,13 @@ class Baza extends CI_Model{
 		$this->db->update('uzytkownik',array('haslo'=>$nowehaslo));
 	}
 	
+	public function daj_nick($user_id){
+		$this->db->select('nick');
+		$this->db->where('id_uzytkownik',$user_id);
+		$x = $this->db->get('uzytkownik')->result();
+		return $x[0]->nick;
+	}
+	
 	//zlecenie
 	public function czy_zlecenie_istnieje($id){
 		$zapytanie = $this->db->get_where('zlecenie',array('id_zlecenie'=>$id));
@@ -170,16 +177,13 @@ class Baza extends CI_Model{
 		return false;
 	}
 	public function dodaj_zgloszenie($id_zlecenie,$id_zglaszajacy){
-		if(czy_juz_zgloszono($id_zlecenie,$id_zglaszajacy)){
-			return false;
-		}
 		$teraz = date('Y-m-d H:i:s');
 		$dane = array(
 			'zlecenie_id'=>$id_zlecenie,
 			'zglaszajacy_id'=>$id_zglaszajacy,
 			'czas'=>$teraz
 		);
-		$this->db->insert('zgloszeni',$dane);
+		$this->db->insert('zgloszenie',$dane);
 		return true;
 	}
 	
@@ -202,7 +206,7 @@ class Baza extends CI_Model{
 	}
 	
 	public function czy_wygrales_zlecenie($zlecenie_id,$user_id){
-		$x = $this->db->query('SELECT * FROM zwyciezca JOIN zgloszenie ON zgloszenie_id = id_zgloszenie WHERE zwyciezca.zlecenie_id = '.$zlecenie_id.' AND zglaszajacy_id = '.$user_id';')->result();
+		$x = $this->db->query('SELECT * FROM zwyciezca JOIN zgloszenie ON zgloszenie_id = id_zgloszenie WHERE zwyciezca.zlecenie_id = '.$zlecenie_id.' AND zglaszajacy_id = '.$user_id.';')->result();
 		if(count($x)>0){
 			return true;
 		}else{
@@ -224,6 +228,34 @@ class Baza extends CI_Model{
 		$this->db->set('status',2);
 		$this->db->where('zlecenie_id',$zlecenie_id);
 		$this->db->update('zwyciezca');
+	}
+	
+	//panel uzytkownika
+	
+	public function aktualne_zgloszenia($user_id){
+		$data = date('Y-m-d');
+		$czas = date('H:i:s');
+		$aktualne = '(data > "'.$data.'" OR (data = "'.$data.'" AND godzina > "'.$czas.'"))';
+		$this->db->from('zgloszenie');
+		$this->db->join('zlecenie','zlecenie_id = id_zlecenie');
+		$this->db->join('zwyciezca','zgloszenie_id = id_zgloszenie','left');
+		$this->db->where('zglaszajacy_id',$user_id);
+		$this->db->where($aktualne);
+		$this->db->order_by('status','DESC');
+		$this->db->order_by('data','DESC');
+		$this->db->order_by('czas','DESC');
+		return $this->db->get()->result();
+	}
+	
+	public function moje_zlecenia($user_id){
+		$this->db->select('id_zlecenie,zlecajacy_id,miejsce,zlecenie.data,godzina,cena,ocena,komentarz,nick');
+		$this->db->from('zlecenie');
+		$this->db->join('zwyciezca','id_zlecenie = zwyciezca.zlecenie_id','left');
+		$this->db->join('ocena','id_zlecenie = ocena.zlecenie_id','left');
+		$this->db->join('uzytkownik','id_uzytkownik = ocena.uzytkownik_id','left');
+		$this->db->where('zlecajacy_id',$user_id);
+		$this->db->order_by('zlecenie.data DESC,godzina DESC');
+		return $this->db->get()->result();
 	}
 	
 	//ocena

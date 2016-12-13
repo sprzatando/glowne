@@ -53,7 +53,7 @@ class Glowny extends CI_Controller{
 		}
 		$prace = $this->baza->prace();
 		$this->load->view("naglowek",array('tytul'=>'SPRZĄTANDO - ZLECENIA'));
-		$this->load->view('glowna',array('zalogowany'=>$zalogowany,'porzadek'=>$porzadek,'sparsowany'=>$sparsowany,'zlecenia'=>$zlecenia,'prace'=>$prace));
+		$this->load->view('glowny/glowna',array('zalogowany'=>$zalogowany,'porzadek'=>$porzadek,'sparsowany'=>$sparsowany,'zlecenia'=>$zlecenia,'prace'=>$prace));
 	}
 	
 	public function zaloguj(){
@@ -62,15 +62,16 @@ class Glowny extends CI_Controller{
 			$haslo = $this->input->post('haslo_logowanie');
 			if($email != null && $haslo != null){
 				$zwrot = $this->baza->loguj($email,$haslo);
-				var_dump($zwrot);
 				if($zwrot != false){
 					$this->session->set_userdata('zalogowany',$zwrot->id_uzytkownik);
 					redirect('glowny');
 				}
+				$this->load->view("naglowek",array('tytul'=>'SPRZATANDO - LOGOWANIE'));
+				$this->load->view("glowny/logowanie",array('zledane'=>true));
 			}else{
 				//formularz logowania			
 				$this->load->view("naglowek",array('tytul'=>'SPRZATANDO - LOGOWANIE'));
-				$this->load->view("logowanie");
+				$this->load->view("glowny/logowanie");
 			}
 		}else{
 			redirect('glowny');
@@ -100,7 +101,7 @@ class Glowny extends CI_Controller{
 				'Content-type: text/html; charset=utf-8';
 				if(mail($email,$temat,$wiadomosc,$naglowki)){
 					$this->load->view("naglowek",array('tytul'=>'PRZYPOMNIJ HASLO'));
-					$this->load->view('przypominajka',array('email'=>$email));
+					$this->load->view('glowny/przypominajka',array('email'=>$email));
 				}else{
 					$this->load->view('blad',array('komunikat'=>'Wystąpił problem z wysłaniem linku do resetu hasła!'));
 				}
@@ -109,7 +110,7 @@ class Glowny extends CI_Controller{
 			}
 		}else{
 			$this->load->view("naglowek",array('tytul'=>'PRZYPOMNIJ HASLO'));
-			$this->load->view("przypominajka");
+			$this->load->view("glowny/przypominajka");
 		}
 	}
 	
@@ -118,7 +119,7 @@ class Glowny extends CI_Controller{
 			if($this->session->przypominajka == $kod){
 				$this->session->set_tempdata('kodzlinku',$kod,600);
 				$this->load->view('naglowek',array('tytul'=>'ZMIANA HASŁA'));
-				$this->load->view('zmianahasla');
+				$this->load->view('glowny/zmianahasla');
 			}else{
 				$this->load->view('blad',array('komunikat'=>'Najprawdopodobniej link do zmiany hasła wygasnął<br/>Spróbuj ponownie'));
 			}
@@ -138,10 +139,10 @@ class Glowny extends CI_Controller{
 					$this->session->unset_userdata('przypominajka');
 					$this->session->unset_userdata('kodzlinku');
 					$this->load->view('naglowek',array('tytul'=>'ZMIANA HASŁA'));
-					$this->load->view('zmianahasla',array('zmieniono'=>true));
+					$this->load->view('glowny/zmianahasla',array('zmieniono'=>true));
 				}else{
 					$this->load->view('naglowek',array('tytul'=>'ZMIANA HASŁA'));
-					$this->load->view('zmianahasla',array('zmieniono'=>false));
+					$this->load->view('glowny/zmianahasla',array('zmieniono'=>false));
 				}
 			}else{
 				$this->load->view('blad',array('komunikat'=>'Najprawdopodobniej link do zmiany hasła wygasnął<br/>Spróbuj ponownie'));

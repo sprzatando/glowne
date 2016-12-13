@@ -15,6 +15,8 @@ class Zlecenie extends CI_Controller{
 		$po_prostu_pokaz = true;
 		$user = $this->session->zalogowany;
 		if($dane = $this->baza->czy_zlecenie_istnieje($id)){
+			$dane[0]->nick = $this->baza->daj_nick($dane[0]->zlecajacy_id);
+			$prace = $this->baza->prace();
 			$aktualna_data = date('Y-m-d');
 			$aktualna_godzina = date('H:i');
 			if($this->baza->czy_zlecenie_aktualne($id,$aktualna_data,$aktualna_godzina)){
@@ -33,21 +35,22 @@ class Zlecenie extends CI_Controller{
 									//wyświetl komunikat informujący o poprawnym zgłoszeniu się
 									$this->baza->dodaj_zgloszenie($id,$user);
 									$this->load->view("naglowek",array('tytul'=>'ZLECENIE'));
-									$this->load->view('zlecenie/zlecenie',array('zglos_sie'=>1));
+									$this->load->view('zlecenie/zlecenie',array('dane'=>$dane,'prace'=>$prace,'zglos_sie'=>1));
 								}else{
 									//wyswietl widok z możliwością zgłoszenia się do niego
 									//aktualne - true,jestes_zlecajacym=false,zgloszono_sie=false
 									$this->load->view("naglowek",array('tytul'=>'ZLECENIE'));
-									$this->load->view('zlecenie/zlecenie',array('zglos_sie'=>0));
+									$this->load->view('zlecenie/zlecenie',array('dane'=>$dane,'prace'=>$prace,'zglos_sie'=>0));
 								}
 							}
 						}else{
 							//wybrano zwycięzcę
 							if($this->baza->czy_juz_zgloszono($id,$user)){
 								//zgłoszono się
-								if(czy_wygrales_zlecenie($id,$user){
+								if($this->baza->czy_wygrales_zlecenie($id,$user)){
 									//jesteś zwycięzcą
-									$status = $dane_zwyciezcy[0]->status;
+									
+									$status = $zwyciezca[0]->status;
 									if($status == 0){
 										//zostałeś wybrany przez zlecającego
 										$po_prostu_pokaz = false;
@@ -56,10 +59,10 @@ class Zlecenie extends CI_Controller{
 										if($podjecie != null){
 											//komunikat o pomyślnym podjęciu się pracy
 											$this->baza->potwierdz_podjecie($id);
-											$this->load->view('zlecenie/zlecenie',array('podjecie'=>1));
+											$this->load->view('zlecenie/zlecenie',array('dane'=>$dane,'prace'=>$prace,'podjecie'=>1));
 										}else{
 											//strona z możliwością potwierdzenia podjecia się pracy
-											$this->load->view('zlecenie/zlecenie',array('podjecie'=>0));
+											$this->load->view('zlecenie/zlecenie',array('dane'=>$dane,'prace'=>$prace,'podjecie'=>0));
 										}
 									}
 								}
@@ -76,12 +79,12 @@ class Zlecenie extends CI_Controller{
 							$wybrany = $this->input->post('zlecenie_zwyciezca');
 							if($wybrany != null){
 								$this->baza->wybierz_zwyciezce($id,$wybrany);
-								$this->load->view('zlecenie/zlecenie',array('zgloszenia'=>1));
+								$this->load->view('zlecenie/zlecenie',array('dane'=>$dane,'prace'=>$prace,'zgloszenia'=>1));
 							}else{
 								//wyświetl listę zgłoszeń
 								//daj możliwość wybrania jednego
-								$zgloszenia = $this->db->lista_zgloszen($id);
-								$this->load->view('zlecenie/zlecenie',array('zgloszenia'=>$zgloszenia));
+								$zgloszenia = $this->baza->lista_zgloszen($id);
+								$this->load->view('zlecenie/zlecenie',array('dane'=>$dane,'prace'=>$prace,'zgloszenia'=>$zgloszenia));
 							}
 						}
 					}
@@ -102,9 +105,9 @@ class Zlecenie extends CI_Controller{
 							$potwierdzono = $this->input->post('zlecenie_potwierdzenie');
 							if($potwierdzono != null){
 								$this->baza->potwierdz_wykonanie($id);
-								$this->load->view('zlecenie/zlecenie',array('potwierdzenie'=>1));
+								$this->load->view('zlecenie/zlecenie',array('dane'=>$dane,'prace'=>$prace,'ocena'=>0));
 							}else{
-								$this->load->view('zlecenie/zlecenie',array('potwierdzenie'=>0));
+								$this->load->view('zlecenie/zlecenie',array('dane'=>$dane,'prace'=>$prace,'potwierdzenie'=>0));
 							}
 						}else if($status == 2){
 							$po_prostu_pokaz = false;
@@ -113,10 +116,10 @@ class Zlecenie extends CI_Controller{
 							$ocena = $this->input->post('zlecenie_ocena');
 							$komentarz = $this->input->post('zlecenie_komentarz');
 							if($ocena != null && $komentarz != null){
-								$this->baza->ocen($id,$dane[0]->zglaszajacy_id,$ocena,$komentarz);
-								$this->load->view('zlecenie/zlecenie',array('ocena'=>1));
+								$this->baza->ocen($id,$dane_zwyciezcy[0]->zglaszajacy_id,$ocena,$komentarz);
+								$this->load->view('zlecenie/zlecenie',array('dane'=>$dane,'prace'=>$prace,'ocena'=>1));
 							}else{
-								$this->load->view('zlecenie/zlecenie',array('ocena'=>0));
+								$this->load->view('zlecenie/zlecenie',array('dane'=>$dane,'prace'=>$prace,'ocena'=>0));
 							}
 						}
 					}
@@ -124,7 +127,7 @@ class Zlecenie extends CI_Controller{
 			}
 			if($po_prostu_pokaz){
 				$this->load->view("naglowek",array('tytul'=>'ZLECENIE'));
-				$this->load->view('zlecenie/zlecenie');
+				$this->load->view('zlecenie/zlecenie',array('dane'=>$dane,'prace'=>$prace));
 			}
 		}else{
 			$this->load->view('blad',array('komunikat'=>'Nie ma takiego zlecenia!'));
@@ -169,7 +172,9 @@ class Zlecenie extends CI_Controller{
 						}
 					}
 				}
-				//var_dump($sparsowany);
+				if($sparsowany == ''){
+					//zle dane nowego zlecenia
+				}
 				$dane = array(
 					'zlecajacy_id'=>$this->session->zalogowany,
 					'miejsce'=>$this->input->post('zlecenie_miejsce'),

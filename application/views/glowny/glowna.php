@@ -3,6 +3,7 @@
 		<?php
 		if($zalogowany){
 			echo '<a href="'.site_url('zlecenie/nowe').'"><button class="btn btn-default">NOWE ZLECENIE</button></a>';
+			echo '<a href="'.site_url('uzytkownik').'"><button class="btn btn-default">PANEL UŻYTKOWNIKA</button></a>';
 			echo '<a href="'.site_url('glowny/wyloguj').'"><button class="btn btn-default">WYLOGUJ SIĘ</button></a>';
 		}else{
 			echo '<a href="'.site_url('glowny/zaloguj').'"><button class="btn btn-default">LOGOWANIE</button></a>';
@@ -49,6 +50,7 @@
 				</form>
 			</div>
 			<div class="col-md-10">
+				<h2>AKTUALNE ZLECENIA</h2>
 				<table class="table table-striped">
 					<tr><th>zlecający</th><th>miejsce</th><th>data</th><th>godzina</th><th>cena</th><th>szczegóły</th></tr>
 					<?php
