@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Opinie extends CI_Controller{
@@ -6,28 +6,33 @@ class Opinie extends CI_Controller{
 		parent::__construct();
 		$this->load->library('session');
 		$this->load->model('baza');
+		$this->load->helper('html');
+		$this->load->helper('url');
 	}
 	
 	public function index(){
-		//ranking top 10 uzytkowników na podstawie œredniej
-		//dla ka¿dego u¿ytkownika wyœwietla 3 ostatnie opinie wraz z ocen¹
+		//ranking top 10 uzytkownikÃ³w na podstawie Å›redniej
+		//dla kaÅ¼dego uÅ¼ytkownika wyÅ›wietla 3 ostatnie opinie wraz z ocenÄ…
 		$lista = $this->baza->top_10();
 		foreach($lista as $x){
 			$oceny = $this->baza->pokaz_oceny_usera($x->uzytkownik_id);
 			$x->najnowsze = array();
 			for($i = 0; $i < 3; $i++){
 				if(count($oceny)>$i){
-					$x->najnowsze[$i] = $oceny[$i]->komentarz.' '.$oceny[$i]->ocena.'/6';
+					$x->najnowsze[$i] = array('ocena'=>$oceny[$i]->ocena,'komentarz'=>$oceny[$i]->komentarz);
 				}
 			}
 		}
-		//var_dump($lista);
+		$this->load->view("naglowek",array('tytul'=>'TOP 10'));
+		$this->load->view('opinie/top10',array('lista'=>$lista));
 		//w widoku dodaj dla kazdego usera odnosnik do wszystkich opini
 	}
 	
 	public function dla($index_osoby){
-		//oceny osoby uporz¹dkowane wed³ug daty malejaco
-		$oceny = pokaz_oceny_usera($index_osoby);
+		//oceny osoby uporzÄ…dkowane wedÅ‚ug daty malejaco
+		$oceny = $this->baza->pokaz_oceny_usera($index_osoby);
+		$this->load->view("naglowek",array('tytul'=>'OCENY'));
+		$this->load->view('opinie/dlausera',array('oceny'=>$oceny));
 		//w widoku dodaj odnosniki do zlecenia
 	}
 }

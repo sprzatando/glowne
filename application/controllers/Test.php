@@ -9,12 +9,8 @@ class Test extends CI_Controller{
 	}
 	
 	public function index(){
-		var_dump($_POST);
-		echo '<form method="post">';
-		for($i = 0;$i<10;$i++){
-			echo '<button type="submit" class="btn btn-default" name="zlecenie_zwyciezca" value="'.$i.'">'.$i.'</button>';
-		}
-		echo '</form>';
+		$this->load->view('naglowek',array('tytul'=>'NOWE ZLECENIE'));
+		$this->load->view('glowny/zmianahasla',array('zmieniono'=>true));
 	}
 	
 	public function dwa(){

@@ -1,7 +1,12 @@
 <div class="container-fluid">
 	<div class="row">
-		<a href="<?php echo site_url('glowny'); ?>"><button class="btn btn-default">GŁÓWNA</button></a><a href="<?php echo site_url('uzytkownik/mojezlecenia'); ?>"><button class="btn btn-default">MOJE ZLECENIA</button></a><a href="<?php echo site_url('glowny/wyloguj'); ?>"><button class="btn btn-default">WYLOGUJ</button></a>
+		<div class="col-md-1">
+		</div>
+		<div class="col-md-11">
+			<a href="<?php echo site_url('glowny'); ?>"><button class="btn btn-default">GŁÓWNA</button></a><a href="<?php echo site_url('uzytkownik/mojezlecenia'); ?>"><button class="btn btn-default">MOJE ZLECENIA</button></a><a href="<?php echo site_url('glowny/wyloguj'); ?>"><button class="btn btn-default">WYLOGUJ</button></a>
+		</div>
 	</div>
+	<hr/>
 	<div class="row">
 		<div class="col-md-6">
 			<?php

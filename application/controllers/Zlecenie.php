@@ -173,25 +173,30 @@ class Zlecenie extends CI_Controller{
 					}
 				}
 				if($sparsowany == ''){
-					//zle dane nowego zlecenia
+					$prace = $this->baza->prace();
+					//var_dump($prace);
+					$email = $this->baza->podaj_email($this->session->zalogowany);
+					$this->load->view('naglowek',array('tytul'=>'NOWE ZLECENIE'));
+					$this->load->view('zlecenie/nowezlecenie',array('prace'=>$prace,'email'=>$email,'min_pokoi'=>false));
+				}else{
+					$dane = array(
+						'zlecajacy_id'=>$this->session->zalogowany,
+						'miejsce'=>$this->input->post('zlecenie_miejsce'),
+						'data'=>$this->input->post('zlecenie_data'),
+						'godzina'=>$this->input->post('zlecenie_godzina'),
+						'telefon'=>$this->input->post('zlecenie_telefon'),
+						'mail_kontaktowy'=>$this->input->post('zlecenie_email'),
+						'cena'=>$this->input->post('zlecenie_cena'),
+						'pokoje_i_prace'=>$sparsowany
+					);
+					$this->baza->dodaj_zlecenie($dane);
+					redirect(site_url('zlecenie/zleconopomyslnie'));
 				}
-				$dane = array(
-					'zlecajacy_id'=>$this->session->zalogowany,
-					'miejsce'=>$this->input->post('zlecenie_miejsce'),
-					'data'=>$this->input->post('zlecenie_data'),
-					'godzina'=>$this->input->post('zlecenie_godzina'),
-					'telefon'=>$this->input->post('zlecenie_telefon'),
-					'mail_kontaktowy'=>$this->input->post('zlecenie_email'),
-					'cena'=>$this->input->post('zlecenie_cena'),
-					'pokoje_i_prace'=>$sparsowany
-				);
-				$this->baza->dodaj_zlecenie($dane);
-				redirect('zlecenie/zleconopomyslnie');
 			}else{
-				$this->load->view('naglowek',array('tytul'=>'NOWE ZLECENIE'));
 				$prace = $this->baza->prace();
 				//var_dump($prace);
 				$email = $this->baza->podaj_email($this->session->zalogowany);
+				$this->load->view('naglowek',array('tytul'=>'NOWE ZLECENIE'));
 				$this->load->view('zlecenie/nowezlecenie',array('prace'=>$prace,'email'=>$email));
 				//podaj formularz
 			}

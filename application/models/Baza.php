@@ -134,30 +134,31 @@ class Baza extends CI_Model{
 		}
 	}
 	
-	public function zlecenia_aktualne($data,$czas,$porzadek=0,$filtr = -1){
+	public function zlecenia_aktualne($data,$czas,$user_id,$porzadek,$filtr){
+	//public function zlecenia_aktualne($data,$czas,$porzadek=0,$filtr = -1){
+		$this->db->select('id_zlecenie,miejsce,data,godzina,cena,nick,id_zwyciezca');
+		$this->db->from('zlecenie');
+		$this->db->join('uzytkownik','id_uzytkownik = zlecajacy_id');
+		$this->db->join('zwyciezca','id_zlecenie = zlecenie_id','left');
 		$aktualne = '(data > "'.$data.'" OR (data = "'.$data.'" AND godzina > "'.$czas.'"))';
 		$this->db->where($aktualne);
-		if($filtr != -1){
-			$this->db->like('pokoje_i_prace',$filtr);
+		$this->db->where('id_zwyciezca is NULL');
+		
+		if($filtr != "%"){
+			$this->db->where('pokoje_i_prace LIKE "'.$filtr.'"');
 		}
 		//0-domyslne,1-cena malejaco,2-cena rosnaco
-		if($porzadek == 0){
+		if($porzadek == null){
 			$this->db->order_by('id_zlecenie','DESC');
 		}else if($porzadek == 1){
 			$this->db->order_by('cena','DESC');
 		}else if($porzadek == 2){
 			$this->db->order_by('cena','ASC');
 		}
-		
-		$zapytanie = $this->db->get('zlecenie');
-		$zwrot =  $zapytanie->result();
-		foreach($zwrot as $x){
-			$this->db->select('nick');
-			$zap2 = $this->db->get_where('uzytkownik',array('id_uzytkownik'=>$x->zlecajacy_id));
-			$zwrot2 = $zap2->result();
-			$x->nick = $zwrot2[0]->nick;
+		if($user_id != null){
+			$this->db->where('zlecajacy_id !=',$user_id);
 		}
-		return $zwrot;
+		return $this->db->get()->result();
 	}
 	
 	public function podaj_email($user_id){

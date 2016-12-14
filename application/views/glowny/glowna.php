@@ -1,19 +1,28 @@
 	<div class="container-fluid">	
 		<div class="row">
-		<?php
-		if($zalogowany){
-			echo '<a href="'.site_url('zlecenie/nowe').'"><button class="btn btn-default">NOWE ZLECENIE</button></a>';
-			echo '<a href="'.site_url('uzytkownik').'"><button class="btn btn-default">PANEL UŻYTKOWNIKA</button></a>';
-			echo '<a href="'.site_url('glowny/wyloguj').'"><button class="btn btn-default">WYLOGUJ SIĘ</button></a>';
-		}else{
-			echo '<a href="'.site_url('glowny/zaloguj').'"><button class="btn btn-default">LOGOWANIE</button></a>';
-			echo '<a href="'.site_url('glowny/przypomnij').'"><button class="btn btn-default">ZAPOMNIAŁEM HASŁA</button></a>';
-			echo '<a href="'.site_url('rejestracja').'"><button class="btn btn-default">REJESTRACJA</button></a>';
-		}
-		?>
+			<div class="col-md-1">
+			</div>
+			<div class="col-md-11">
+			<?php
+			if($zalogowany){
+				echo '<a href="'.site_url('zlecenie/nowe').'"><button class="btn btn-default">NOWE ZLECENIE</button></a>';
+				echo '<a href="'.site_url('uzytkownik').'"><button class="btn btn-default">PANEL UŻYTKOWNIKA</button></a>';
+				echo '<a href="'.site_url('opinie').'"><button class="btn btn-default">TOP 10</button></a>';
+				echo '<a href="'.site_url('glowny/wyloguj').'"><button class="btn btn-default">WYLOGUJ SIĘ</button></a>';
+			}else{
+				echo '<a href="'.site_url('glowny/zaloguj').'"><button class="btn btn-default">LOGOWANIE</button></a>';
+				echo '<a href="'.site_url('glowny/przypomnij').'"><button class="btn btn-default">ZAPOMNIAŁEM HASŁA</button></a>';
+				echo '<a href="'.site_url('rejestracja').'"><button class="btn btn-default">REJESTRACJA</button></a>';
+				echo '<a href="'.site_url('opinie').'"><button class="btn btn-default">TOP 10</button></a>';
+			}
+			?>
+			</div>
 		</div>
+		<hr />
 		<div class="row">
 			<div class="col-md-2">
+				<a href="<?php echo site_url('glowny'); ?>"><button class="btn btn-warning">ZRESETUJ</button></a>
+				<br/><br/>
 				<form method="post">
 					<select name="lista_porzadek">
 						<option <?php echo (($porzadek == null)? 'selected':''); ?> value="0">--</option>
@@ -50,7 +59,13 @@
 				</form>
 			</div>
 			<div class="col-md-10">
-				<h2>AKTUALNE ZLECENIA</h2>
+				<?php
+				if($zalogowany){
+					echo '<h2>ZLECENIA DO KTÓRYCH MOŻESZ SIĘ ZGŁOSIĆ</h2>';
+				}else{
+					echo '<h2>ZLECENIA AKTUALNE</h2>';
+				}
+				?>
 				<table class="table table-striped">
 					<tr><th>zlecający</th><th>miejsce</th><th>data</th><th>godzina</th><th>cena</th><th>szczegóły</th></tr>
 					<?php

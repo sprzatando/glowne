@@ -17,8 +17,10 @@ class Glowny extends CI_Controller{
 		}else{
 			$zalogowany = false;
 		}
+		$user_id = $this->session->zalogowany;
 		$porzadek = $this->input->post("lista_porzadek");
-		$sparsowany = "";
+		$filtr = "";
+		$pp = "";
 		$pokoje = $this->baza->pokoje();
 		foreach($pokoje as $x){
 			$nazwa = 'lista_'.$x->id_pokoj;
@@ -31,29 +33,23 @@ class Glowny extends CI_Controller{
 					$b = $this->input->post($nazwa2);
 					if($b != null){
 						$ile_prac++;
-						$sparsowany .= '%'.$y->pokoj_id.'_'.$y->praca_id;
+						$filtr .= '%'.$y->pokoj_id.'\_'.$y->praca_id;
+						$pp .= '|'.$y->pokoj_id.'_'.$y->praca_id;
 					}
 				}
 				if($ile_prac == 0){
-					$sparsowany .= '%'.$x->id_pokoj.'_';
+					$filtr .= '%'.$x->id_pokoj.'\_';
+					$pp .= '|'.$x->id_pokoj.'_';
 				}
 			}
 		}
-		$sparsowany .= '%';
+		$filtr .= '%';
 		$aktualna_data = date('Y-m-d');
 		$aktualna_godzina = date('H:i');
-		if($porzadek == null && $sparsowany == "%"){
-			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina);
-		}else if($porzadek != null && $sparsowany == "%"){
-			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina,$porzadek);
-		}else if($porzadek == null && $sparsowany != "%"){
-			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina,0,$sparsowany);
-		}else if($porzadek != null && $sparsowany != "%"){
-			$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina,$porzadek,$sparsowany);
-		}
+		$zlecenia = $this->baza->zlecenia_aktualne($aktualna_data,$aktualna_godzina,$user_id,$porzadek,$filtr);
 		$prace = $this->baza->prace();
 		$this->load->view("naglowek",array('tytul'=>'SPRZĄTANDO - ZLECENIA'));
-		$this->load->view('glowny/glowna',array('zalogowany'=>$zalogowany,'porzadek'=>$porzadek,'sparsowany'=>$sparsowany,'zlecenia'=>$zlecenia,'prace'=>$prace));
+		$this->load->view('glowny/glowna',array('zalogowany'=>$zalogowany,'porzadek'=>$porzadek,'sparsowany'=>$pp,'zlecenia'=>$zlecenia,'prace'=>$prace));
 	}
 	
 	public function zaloguj(){

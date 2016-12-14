@@ -1,0 +1,3 @@
+GLOWNY - obczaic strony do zmiany hasla
+REJESTRACJA - wypozycjonowane widoki, przetestowane kontrolery, pomysleæ nad zrobieniem t³a
+Pomyœleæ nad zmian¹ funkcji w modelu baza podzieliæ wed³ug kontrolerów i ich funkcji
