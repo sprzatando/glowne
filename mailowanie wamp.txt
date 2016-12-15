@@ -12,3 +12,7 @@ sendmail_path = "C:\wamp\sendmail\sendmail.exe -t -i"
 
 w koncie google ustawic zezwolenie dla mniej bezpiecznych aplikacji
 https://www.google.com/settings/security/lesssecureapps
+
+sprzatando@onet.pl
+
+haslo:5zuru-Buru
