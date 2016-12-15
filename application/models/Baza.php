@@ -155,7 +155,10 @@ class Baza extends CI_Model{
 		$this->db->select('id_zlecenie,miejsce,data,godzina,cena,nick,id_zwyciezca');
 		$this->db->from('zlecenie');
 		$this->db->join('uzytkownik','id_uzytkownik = zlecajacy_id');
-		$this->db->join('zwyciezca','id_zlecenie = zlecenie_id','left');
+		if($user_id != null){
+			$this->db->join('zgloszenie','zglaszajacy_id = '.$user_id.' AND zgloszenie.zlecenie_id = id_zlecenie','left');
+		}
+		$this->db->join('zwyciezca','id_zlecenie = zwyciezca.zlecenie_id','left');
 		$aktualne = '(data > "'.$data.'" OR (data = "'.$data.'" AND godzina > "'.$czas.'"))';
 		$this->db->where($aktualne);
 		$this->db->where('id_zwyciezca is NULL');
@@ -173,8 +176,10 @@ class Baza extends CI_Model{
 		}
 		if($user_id != null){
 			$this->db->where('zlecajacy_id !=',$user_id);
+			$this->db->where('zglaszajacy_id IS NULL');
 		}
-		return $this->db->get()->result();
+		$x = $this->db->get()->result();
+		return $x;
 	}
 	
 	public function podaj_email($user_id){
@@ -268,11 +273,14 @@ class Baza extends CI_Model{
 		$this->db->select('id_zlecenie,zlecajacy_id,miejsce,zlecenie.data,godzina,cena,ocena,komentarz,nick');
 		$this->db->from('zlecenie');
 		$this->db->join('zwyciezca','id_zlecenie = zwyciezca.zlecenie_id','left');
+		$this->db->join('zgloszenie','id_zgloszenie = zwyciezca.zgloszenie_id','left');
 		$this->db->join('ocena','id_zlecenie = ocena.zlecenie_id','left');
-		$this->db->join('uzytkownik','id_uzytkownik = ocena.uzytkownik_id','left');
+		$this->db->join('uzytkownik','id_uzytkownik = zgloszenie.zglaszajacy_id','left');
 		$this->db->where('zlecajacy_id',$user_id);
 		$this->db->order_by('zlecenie.data DESC,godzina DESC');
-		return $this->db->get()->result();
+		$x = $this->db->get()->result();
+		//var_dump($this->db->last_query());
+		return $x;
 	}
 	
 	//ocena

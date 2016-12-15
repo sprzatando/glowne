@@ -10,7 +10,7 @@
 	<div class="row">
 		<div class="col-md-6">
 			<?php
-			$akt_stat = '';
+			$akt_stat = 'inny';
 			$otwarto_tabele = false;
 			foreach($zgloszenia as $x){
 				if($x->status != $akt_stat){
