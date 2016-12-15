@@ -17,7 +17,7 @@ class Uzytkownik extends CI_Controller{
 			$moje_zgloszenia = $this->baza->aktualne_zgloszenia($user);
 			$moje_opinie = $this->baza->pokaz_oceny_usera($user);
 			$this->load->view("naglowek",array('tytul'=>'PANEL'));
-			$this->load->view('uzytkownik/panel',array('zgloszenia'=>$moje_zgloszenia,'opinie'=>$moje_opinie));
+			$this->load->view('uzytkownik/panel',array('zgloszenia'=>$moje_zgloszenia,'opinie'=>$moje_opinie,'ja'=>$user));
 		}else{
 			$this->load->view('blad',array('komunikat'=>'Tylko dla zalogowanych!'));
 		}
