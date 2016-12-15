@@ -44,8 +44,24 @@ class Baza extends CI_Model{
 		}
 	}
 	
-	public function rejestruj($email,$haslo,$kod,$nick){
+	public function wolne_id(){
+		$this->db->select('id_rejestracja');
+		$this->db->from('rejestracja');
+		$this->db->order_by('id_rejestracja','DESC');
+		$this->db->limit('1');
+		$x = $this->db->get()->result();
+		if(count($x)==0){
+			return 1;
+		}else{
+			$x = $x[0]->id_rejestracja;
+			$x++;
+			return $x;
+		}
+	}
+	
+	public function rejestruj($id,$email,$haslo,$kod,$nick){
 		$dane = array(
+			'id_rejestracja'=>$id,
 			'email'=>$email,
 			'haslo'=>$haslo,
 			'nick'=>$nick,

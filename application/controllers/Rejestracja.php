@@ -22,14 +22,15 @@ class Rejestracja extends CI_Controller{
 			$odp = $this->baza->walidacja_rejestracji($email,$nick);
 			if($odp === true && $podobnehaslo === true){
 				$kod = rand(1000,9999);
-				$id_rejestracji = $this->baza->rejestruj($email,$haslo,$kod,$nick);
+				$id_rejestracji = $this->baza->wolne_id();
 				$link = site_url('rejestracja/aktywacja/'.$id_rejestracji.'/'.$kod);
 				$temat='REJESTRACJA W SPRZATANDO';
 				$wiadomosc='Witaj!<br/>Aby aktywować konto użyj <a href="'.$link.'">tego linku</a>';
-				$naglowki='From: admion@sprzatando.com' . "\r\n" .
+				$naglowki='From: sprzatando@onet.pl' . "\r\n" .
 				'MIME-Version: 1.0' . "\r\n" .
 				'Content-type: text/html; charset=utf-8';
 				if(mail($email,$temat,$wiadomosc,$naglowki)){
+					$this->baza->rejestruj($id_rejestracji,$email,$haslo,$kod,$nick);
 					$this->load->view("naglowek",array('tytul'=>'REJESTRACJA'));
 					$this->load->view("rejestracja/rejestracja",array('email'=>$email));
 				}else{

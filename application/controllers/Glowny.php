@@ -92,7 +92,7 @@ class Glowny extends CI_Controller{
 				$link = site_url('glowny/linkhaslo').'/'.$kod;
 				$temat='SPRZATANDO - RESET HASLA';
 				$wiadomosc='Witaj!<br/>Aby zresetować hasło użyj <a href="'.$link.'">tego linku</a>';
-				$naglowki='From: admion@sprzatando.com' . "\r\n" .
+				$naglowki='From:sprzatando@onet.pl' . "\r\n" .
 				'MIME-Version: 1.0' . "\r\n" .
 				'Content-type: text/html; charset=utf-8';
 				if(mail($email,$temat,$wiadomosc,$naglowki)){
