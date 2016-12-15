@@ -39,10 +39,13 @@
 		</div>
 		<div class="col-md-10">
 			<div class="row">
-				<div class="col-md-10">
+				<div class="col-md-9">
+				</div>
+				<div class="col-md-1">
+					<h3>cena:</h3>
 				</div>
 				<div class="col-md-2">
-					<h3><?php echo $dane[0]->cena; ?></h3>
+					<h3><?php echo $dane[0]->cena; ?> zł</h3>
 				</div>
 			</div>
 			<div class="row">
