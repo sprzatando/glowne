@@ -301,8 +301,21 @@ class Baza extends CI_Model{
 	}
 	
 	public function pokaz_oceny_usera($user_id){
+		$this->db->where('uzytkownik_id',$user_id);
 		$this->db->order_by('data','DESC');
-		return $this->db->get_where('ocena',array('uzytkownik_id'=>$user_id))->result();
+		$oceny = $this->db->get('ocena')->result();
+		$this->db->select_avg('ocena');
+		$this->db->where('uzytkownik_id',$user_id);
+		$srednia = $this->db->get('ocena')->result();
+		$zwrot = new stdClass;
+		$zwrot->oceny = $oceny;
+		$zwrot->srednia = $srednia[0]->ocena;
+		$this->db->select('nick');
+		$this->db->from('uzytkownik');
+		$this->db->where('id_uzytkownik',$user_id);
+		$nick = $this->db->get()->result();
+		$zwrot->nick = $nick[0]->nick;
+		return $zwrot;
 	}
 	
 	public function top_10(){

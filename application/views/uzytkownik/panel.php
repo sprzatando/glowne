@@ -37,10 +37,12 @@
 			?>
 		</div>
 		<div class="col-md-6">
+			<h3>moja średnia: <?php echo $opinie->srednia; ?></h3>
 			<table class="table">
 				<tr><th>ocena</th><th>komentarz</th><th>zlecenie</th></tr>
 			<?php
-				foreach($opinie as $x){
+				$oceny = $opinie->oceny;
+				foreach($oceny as $x){
 					echo '<tr><td>'.$x->ocena.'</td><td>'.$x->komentarz.'</td><td><a target="_blank" href="'.site_url('zlecenie/index/'.$x->zlecenie_id).'"><button class="btn btn-default">SZCZEGÓŁY</button></a></td></tr>';
 				}
 			?>

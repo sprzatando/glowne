@@ -19,7 +19,7 @@
 				echo '<td>'.$x->srednia.'</td>';
 				echo '<td><table class="table"><tr><th>ocena</th><th>komentarz</th></tr>';
 				foreach($x->najnowsze as $y){
-					echo '<tr><td>'.$y['ocena'].'</td><td>'.$y['komentarz'].'</td></tr>';
+					echo '<tr><td>'.$y->ocena.'</td><td>'.$y->komentarz.'</td></tr>';
 				}
 				echo '</table></td>';
 				echo '</tr>';

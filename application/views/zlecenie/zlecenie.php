@@ -110,12 +110,13 @@
 	</div>
 	<hr/>
 	<div class="row">
-		<div class="col-md-3">
-		</div>
-		<div class="col-md-9">
+		
 		<?php
 			if(isset($zglos_sie)){
 				if($zglos_sie == 0){
+					echo '<div class="col-md-3">
+					</div>
+					<div class="col-md-9">';
 					echo '<form method="post">';
 					echo '<button class="btn btn-default" type="submit" name="zlecenie_zgloszenie" value="tak">ZGŁOŚ SIĘ</button>';
 					echo '</form>';
@@ -123,6 +124,9 @@
 			}
 			if(isset($podjecie)){
 				if($podjecie == 0){
+					echo '<div class="col-md-3">
+					</div>
+					<div class="col-md-9">';
 					echo '<form method="post">';
 					echo '<button class="btn btn-default" type="submit" name="zlecenie_podjecie" value="tak">POTWIERDŹ PODJĘCIE</button>';
 					echo '</form>';
@@ -130,6 +134,9 @@
 			}
 			if(isset($potwierdzenie)){
 				if($potwierdzenie == 0){
+					echo '<div class="col-md-3">
+					</div>
+					<div class="col-md-9">';
 					echo '<form method="post">';
 					echo '<button class="btn btn-default" type="submit" name="zlecenie_potwierdzenie" value="tak">POTWIERDŹ WYKONANIE</button>';
 					echo '</form>';
@@ -137,15 +144,29 @@
 			}
 			if(isset($zgloszenia)){
 				if($zgloszenia != 1){
+					echo '<div class="col-md-1">
+					</div>
+					<div class="col-md-11">';
 					echo '<form method="post">';
+					echo '<table class="table table-striped">';
+					echo '<tr><th>nick</th><th>zobacz oceny</th><th>zatrudnij</th></tr>';
+					//var_dump($zgloszenia);
 					foreach($zgloszenia as $x){
-						echo '<button type="submit" class="btn btn-default" name="zlecenie_zwyciezca" value="'.$x->id_zgloszenie.'">'.$x->nick.'</button><br/>';
+						echo '<tr>';
+						echo '<td>'.$x->nick.'</td>';
+						echo '<td><a target="_blank" href="'.site_url('opinie/dla/'.$x->zglaszajacy_id).'">OCENY</a></td>';
+						echo '<td><button type="submit" class="btn btn-default" name="zlecenie_zwyciezca" value="'.$x->id_zgloszenie.'">wybierz</button><br/></td>';
+						echo '</tr>';
 					}
+					echo '</table>';
 					echo '</form>';
 				}
 			}
 			if(isset($ocena)){
 				if($ocena == 0){
+					echo '<div class="col-md-1">
+					</div>
+					<div class="col-md-11">';
 					echo '<form method="post">';
 					echo '<div class="form-group">';
 					echo '<label for="input1">OCENA [1-6]</label>';
